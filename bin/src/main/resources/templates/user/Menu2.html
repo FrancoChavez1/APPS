@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Smotve</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{../css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{../css/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{../css/owl.theme.default.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/templatemo-style.css}">
+    <link rel="stylesheet" th:href="@{/css/Formulario_style.css}">
+	<link rel="stylesheet" th:href="@{/css/styleMenu.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+     
+</head>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC32VsgEeKPGzCBDCFFgLaafZAvmvcvVOA&libraries=places"></script>
+
+<body onload="initMap()">
+    <!-- PRE LOADER -->
+    <section class="preloader">
+        <div class="spinner">
+            <span class="spinner-rotate"></span>
+        </div>
+    </section>
+ 
+	<!-- MENU -->
+	<!-- INSERTAR div header -->
+			<div th:insert="~{user/Template_Admin.html :: header}"></div>
+<br><br><br><br>
+<div class="my-card mb-4">
+    <div class="my-card-body">
+        <div class="small text-muted" id="fecha_actual"></div>
+        <h3 class="my-card-title" th:text="'Bienvenido ' + ${session.usuario.nombres}">Bienvenido Daniel</h3>
+    </div>
+</div>
+<div class="my-container">
+        <div class="my-search">
+           <div class="my-card mb-4">
+               <div class="my-card-header">Generador de rutas</div>
+               <div class="my-card-body">
+                   <div>
+                       <input id="origen" placeholder="Ingrese el origen" class="my-form-control" type="text" />
+                   </div>
+                   <br>
+                   <div class="my-form-check">
+                       <input class="my-form-check-input" type="checkbox" id="useCurrentLocation">
+                       <label class="my-form-check-label" for="useCurrentLocation">
+                           Usar mi ubicación actual
+                       </label>
+                   </div>
+                   <br>
+                   <div class="my-input-group">
+                       <input id="destino" placeholder="Ingrese el destino" class="my-form-control" type="text" />
+                       <button id="buscar" class="my-btn my-btn-primary" type="button">Buscar</button>
+                   </div>
+               </div>
+           </div>
+       </div>
+	   <div id="loader-container" class="loader-container" style="display: none;">
+	       <div id="loader" class="loader"></div>
+	   </div>
+	   
+	   <div>
+	       <label for="preference">Seleccione su preferencia:</label>
+	       <select id="preference">
+	           <option value="shortest-duration">Menor duración</option>
+	           <option value="fewest-transfers">Menor número de transbordos</option>
+	       </select>
+	   </div>
+	   <div id="bus-routes" class="my-card-header"></div>
+	   <div id="recommended-route" class="my-card-header"></div>
+ 
+	   <div id="ruta-popup" class="popup">
+	       <div class="popup-contenido">
+	           <span class="cerrar-popup">&times;</span>
+	           <div class="popup-detalles">
+	               <div id="mapa-popup"></div>
+	               <div id="detalles-ruta">
+	                   <form th:action="@{/user/saveRV}" method="post" id="idDelFormulario">
+	                        
+	                       <div id="detalles-viaje"></div>
+						   <div id="detalles-unidad"></div>
+						   <!-- Campos ocultos para los valores dinámicos -->
+						      <input type="hidden" id="idUnidadTransporte" name="idUnidadTransporte" />
+							  <!-- Campos ocultos para los detalles del viaje -->
+							  <input type="hidden" id="destinoo" name="destino" />
+							  <input type="hidden" id="distancia" name="distancia" />
+							  <input type="hidden" id="duracion" name="duracion" />
+							  <input type="hidden" id="fechaHoraLlegada" name="fechaHoraLlegada" />
+							  <input type="hidden" id="fechaHoraSalida" name="fechaHoraSalida" />
+							  <input type="hidden" id="origenn" name="origen" />
+							  <input type="hidden" id="trafico" name="trafico" />
+							  <input type="hidden" th:value="${session.usuario.id}" id="idUsuario" name="idUsuario" />
+	                       <button id="btnGuardar"  type="submit" class="guardar-viaje-btn">Guardar Viaje</button>
+			 
+	                   </form>
+	               </div>
+				   <!-- Mensajes de estado -->
+				   <div id="mensajeCargando" style="display: none;">Guardando...</div>
+				   <div id="mensajeExito" style="display: none;"></div>
+	           </div>
+	       </div>
+	   </div>
+       <div class="my-map-section">
+		
+		
+           <div class="my-card mb-4">
+               <div class="my-card-body">
+                   <div class="small text-muted" id="fecha_actual"></div>
+
+                   <h3 class="my-card-title">Mapa</h3>
+               </div>
+               <div id="map" class="my-map-container"></div>
+            </div>
+       </div>
+       <div class="my-route-details">
+           <div class="my-card mb-4">
+               <div id="bus-routes" class="my-card-header"></div>
+               <div id="trip-details" class="my-card-body"></div>
+           </div>
+       </div>
+   </div> 
+
+	<br><br><br><br>
+    <!-- FOOTER -->
+	<div th:insert="~{admin/Template_Admin.html :: footer}"></div>
+
+    <!-- SCRIPTS -->
+	
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC32VsgEeKPGzCBDCFFgLaafZAvmvcvVOA&libraries=places"></script>
+ 
+  <script th:src="@{../js/scripts.js}"></script>
+  	<script th:src="@{../js/jquery.js}"></script>
+    <script th:src="@{../js/bootstrap.min.js}"></script>
+    <script th:src="@{../js/owl.carousel.min.js}"></script>
+    <script th:src="@{../js/smoothscroll.js}"></script>
+    <script th:src="@{../js/custom.js}"></script>
+</body>
+
+</html>

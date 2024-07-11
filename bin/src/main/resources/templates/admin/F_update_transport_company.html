@@ -1,0 +1,145 @@
+    
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+       
+     <title>Lista de Servicio</title>
+        <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+     <meta name="description" content="">
+     <meta name="keywords" content="">
+     <meta name="author" content="">
+     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+ 	 <!-- Latest compiled and minified CSS -->
+	 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	 <!-- Optional theme -->
+  
+ 
+	  <!-- CSS -->
+      <link rel="stylesheet" th:href="@{/css/templatemo-style.css}">
+	  <link rel="stylesheet" th:href="@{/css/Formulario_Style.css}">
+	 
+    </head>
+	<body >
+ 
+
+		<!-- INSERTAR div header -->
+		<div th:insert="~{admin/Template_Admin.html :: header}"></div>
+
+
+     <!-- Crear_Servicios de Tranporte -->
+ 
+
+
+
+	  		<div class="container-fluid">
+	 	
+	              <ul class="nav nav-tabs nav-justified"  style="font-size: 17px;">
+	                
+	                <li role="presentation" class="active"><a href="#">_ </a></li>
+	  			  
+	            
+	              </ul>
+	          </div>
+	  		
+	 		 <div class="container-fluid" style="margin: 50px 0;">
+	 		     <div class="row">
+	 		         <div class="col-xs-12 col-sm-4 col-md-3">
+	 					<img src="/img/Logo_solo.png" alt="Lista de Servicio de Transporte" class="img-responsive center-box" style="max-width: 100px; position: absolute; left: 150px;">
+	 		         </div>
+	 		         <div class="col-xs-12 col-sm-8 col-md-8 text-justify lead">
+	 		             Bienvenido a la sección para actualizar una Empresa de Transporte, debes de llenar todos los campos del siguiente formulario para poder registrarlo.
+	 		         </div>
+	 		     </div>
+	 		 </div>
+
+	         
+	  	
+	  	<div class="container-fluid">
+	  		<div class="row">
+	  			<div class="col-xs-12 lead">
+	  				<ol class="breadcrumb">
+	  				  <li class="active"></li>&nbsp;&nbsp;
+	  				 
+	  				 <a th:href="@{/admin/D_list_transport_company}">Listado de ET</a>
+	  				 
+	  				 
+	  				</ol>
+	  			</div>
+	  		</div>
+	  	</div>
+	  	
+	  	 
+	  			
+	  			
+	  		 
+	  		<div class="alert alert-info text-center" style="margin-top:20px;">
+	  			 
+	  		</div>
+	  		 
+			<!-- FORMULARIO DE CREACION: -->
+    <section>
+		
+        <div class="form-box">
+			
+            <div class="form-value">
+				
+                <form th:action="@{/admin/updateet}" method="post" enctype="multipart/form-data">
+					<div class="inputbox">
+					    <!-- Icono de una llave para representar un ID -->
+					    <ion-icon name="key"></ion-icon>
+					    <!-- Bloquear la entrada de datos y establecer el marcador de posición -->
+					    <input th:value="${et.id}" type="text" id="nombre" name="id" placeholder="ID de la empresa" readonly required>
+					    <!-- Agregar una etiqueta descriptiva -->
+					    <label for="nombre">ID</label>
+					</div>
+
+                    <div class="inputbox">
+                        <ion-icon name="text"></ion-icon>
+                        <input th:value="${et.nombre}" type="text" id="nombre" name="nombre" required>
+                        <label for="">Nombre de Empresa</label>
+                    </div>
+                     <div class="inputbox">
+                        <ion-icon name="text"></ion-icon>
+                        <input th:value="${et.descripcion}" type="text" id="descripcion"  name="descripcion" required>
+                        <label for="">Descripcion</label>
+                    </div>
+                    <div class="inputbox">
+						<ion-icon name="card-outline"></ion-icon>
+                        <input th:value="${et.ruc}" type="text" id="ruc" name="ruc" required>
+                        <label for="">RUC</label>
+                    </div>
+					
+					<div class="inputbox">
+					    <label for="servicioTransporte">Tipo de Servicio</label>
+					    <ion-icon name="bus"></ion-icon><br><br>
+					    <select name="servicioTransporte" id="servicioTransporte" required style="width: 100%;">
+					        <option value="" disabled selected>Selecciona</option>
+					        <!-- Iterar sobre la lista de tipos de transporte y mostrarlos como opciones -->
+					        <option th:each="tipoTransporte : ${tiposTransporte}"
+					                th:value="${tipoTransporte.id}"
+					                th:text="${tipoTransporte.nombre}">
+					        </option>
+					    </select>
+					</div>
+
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                     	
+                </form>
+            </div>
+        </div>
+    </section>
+    
+
+     <!-- FOOTER -->
+
+	 <div th:insert="~{admin/Template_Admin.html :: footer}"></div>
+
+     <!-- SCRIPTS -->
+ 
+	 <!-- SCRIPTS FILTRO -->
+ 	 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+
+  
+    </body>
+</html>
